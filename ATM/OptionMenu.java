@@ -1,10 +1,11 @@
-import java.io.IOException;
+import java.io.*;
 import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.InputMismatchException;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Scanner;
+
 
 public class OptionMenu {
 	Scanner menuInput = new Scanner(System.in);
@@ -45,7 +46,7 @@ public class OptionMenu {
 		while (!end) {
 			try {
 				System.out.println("\nSelect the account you want to access: ");
-				System.out.println(" Type 1 - Checkings Account");
+				System.out.println(" Type 1 - Checking Account");
 				System.out.println(" Type 2 - Savings Account");
 				System.out.println(" Type 3 - Exit");
 				System.out.print("\nChoice: ");
@@ -61,7 +62,7 @@ public class OptionMenu {
 					break;
 				case 3:
 					end = true;
-					break;
+						break;
 				default:
 					System.out.println("\nInvalid Choice.");
 				}
@@ -176,7 +177,7 @@ public class OptionMenu {
 		System.out.println("\nEnter PIN to be registered");
 		int pin = menuInput.nextInt();
 		data.put(cst_no, new Account(cst_no, pin));
-		System.out.println("\nYour new account has been successfuly registered!");
+		System.out.println("\nYour new account has been successfully registered!");
 		System.out.println("\nRedirecting to login.............");
 		getLogin();
 	}
@@ -184,6 +185,7 @@ public class OptionMenu {
 	public void mainMenu() throws IOException {
 		data.put(952141, new Account(952141, 191904, 1000, 5000));
 		data.put(123, new Account(123, 123, 20000, 50000));
+		readFile();
 		boolean end = false;
 		while (!end) {
 			try {
@@ -211,5 +213,35 @@ public class OptionMenu {
 		System.out.println("\nThank You for using this ATM.\n");
 		menuInput.close();
 		System.exit(0);
+	}
+	public void writeFile() {
+		try (BufferedWriter bw = new BufferedWriter(new FileWriter("users.txt"))) {
+			for(Map.Entry<Integer, Account> entry : data.entrySet()) {
+				int pin = data.get(entry.getKey()).getPinNumber();
+				double checking = data.get(entry.getKey()).getCheckingBalance();
+				double saving = data.get(entry.getKey()).getSavingBalance();
+				bw.write(entry.getKey() + ":" + entry.getKey() + ":" + pin + ":" + checking + ":" + saving);
+				bw.newLine();
+			}
+			bw.flush();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	public void readFile() {
+		try (BufferedReader br = new BufferedReader(new FileReader("users.txt"))) {
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				String[] parts = line.split(":");
+				int key = Integer.parseInt(parts[0]);
+				int user = Integer.parseInt(parts[1]);
+				int pin = Integer.parseInt(parts[2]);
+				double checking = Double.parseDouble(parts[3]);
+				double saving = Double.parseDouble(parts[4]);
+				data.put(key, new Account(user, pin, checking, saving));
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

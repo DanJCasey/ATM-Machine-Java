@@ -1,3 +1,6 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.DecimalFormat;
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -231,5 +234,11 @@ public class Account {
 				input.next();
 			}
 		}
+	}
+	public static void writeFile(int custNumber, int pin, int checking, int savings) throws IOException {
+		BufferedWriter out = new BufferedWriter(new FileWriter("users.txt"));
+		out.write(custNumber+ "#" + pin + "#" + checking + "#" + savings);
+		out.newLine();
+		out.close();
 	}
 }
